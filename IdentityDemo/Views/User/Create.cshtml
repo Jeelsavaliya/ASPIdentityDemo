@@ -1,0 +1,88 @@
+﻿@model IdentityDemo.Models.User
+
+@if (TempData["SuccessMessage"] != null)
+
+{
+    <input type="hidden" id="SuccessMsg" value="@TempData["SuccessMessage"]" />
+}
+@if (TempData["ErrorMessage"] != null)
+
+{
+    <input type="hidden" id="ErrorMsg" value="@TempData["ErrorMessage"]" />
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                <form asp-action="Create" id="createUserForm">
+                    <div class="card  card-success card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title text-bold">Create User</h3>
+                        </div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger span-error-text"></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label asp-for="FirstName" class="control-label required">First Name</label>
+                                        <input asp-for="FirstName" class="form-control form-control-sm" placeholder="Enter First Name" />
+                                        <span asp-validation-for="FirstName" class="text-danger span-error-text"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label asp-for="LastName" class="control-label required">Last Name</label>
+                                        <input asp-for="LastName" class="form-control form-control-sm" placeholder="Enter Last Name" />
+                                        <span asp-validation-for="LastName" class="text-danger span-error-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label asp-for="Email" class="control-label required"></label>
+                                        <input asp-for="Email" class="form-control form-control-sm" placeholder="example@gmail.com" />
+                                        <span asp-validation-for="Email" class="text-danger span-error-text"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label asp-for="PhoneNumber" class="control-label">Phone Number</label>
+                                        <input asp-for="PhoneNumber" class="form-control form-control-sm" placeholder="Enter Phone Number" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger span-error-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-right">
+                            <button type="submit" id="saveButton" class="btn btn-success">
+                                <span id="saveButtonText">Save</span>
+                            </button>
+                            <button type="button" id="cancelButton" class="btn btn-default" onclick="location.href='@Url.Action("Index", "Users")'">Cancel </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            document.getElementById("createUserForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+                var saveButton = document.getElementById("saveButton");
+                var cancelButton = document.getElementById("cancelButton");
+                saveButton.disabled = true;
+                cancelButton.disabled = true;
+                document.getElementById("saveButtonText").innerHTML = "<span><i class='fas fa-sync-alt fa-spin'></i> Please wait...</span>";
+                this.submit();
+            });
+        });
+    </script>
+}

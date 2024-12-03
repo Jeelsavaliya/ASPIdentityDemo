@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - IdentityDemo</title>
+    <link rel="stylesheet" href="~/css/login.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/identitydemo.styles.css" asp-append-version="true" /> *@
+    
+</head>
+<body>
+        <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+        <div class="card p-3" style="width: 400px; border-radius: 10px;">
+                
+                @RenderBody()
+            </div>
+        </div>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

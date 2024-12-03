@@ -1,0 +1,59 @@
+﻿@model IdentityDemo.Models.User
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                <div class="card card-success card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title text-bold">Edit User</h3>
+                    </div>
+                    <form asp-action="Edit" id="editUserForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger span-error-text"></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label asp-for="FirstName" class="control-label required">First Name</label>
+                                        <input asp-for="FirstName" class="form-control form-control-sm" placeholder="Enter First Name" />
+                                        <span asp-validation-for="FirstName" class="text-danger span-error-text"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label asp-for="LastName" class="control-label required">Last Name</label>
+                                        <input asp-for="LastName" class="form-control form-control-sm" placeholder="Enter Last Name" />
+                                        <span asp-validation-for="LastName" class="text-danger span-error-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label asp-for="Email" class="control-label required"></label>
+                                        <input asp-for="Email" class="form-control form-control-sm" placeholder="example@gmail.com" readonly />
+                                        <span asp-validation-for="Email" class="text-danger span-error-text"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label asp-for="PhoneNumber" class="control-label">Phone Number</label>
+                                        <input asp-for="PhoneNumber" class="form-control form-control-sm" placeholder="Enter Phone Number" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger span-error-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-right">
+                            <button type="submit" id="updateButton" class="btn btn-success">
+                                <span id="updateButtonText">Update</span>
+                            </button>
+                            <button type="button"  class="btn btn-default" asp-action="Index">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

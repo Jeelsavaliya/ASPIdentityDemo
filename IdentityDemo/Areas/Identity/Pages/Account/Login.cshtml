@@ -3,10 +3,15 @@
 
 @{
     ViewData["Title"] = "Log in";
+    Layout = "~/Views/Shared/_Layout_Login.cshtml";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
+@* <h1>@ViewData["Title"]</h1> *@
+@* <head>
+    <link rel="stylesheet" href="~/Areas/Identity/Pages/Account/Manage/Register.cshtml.css" />
+</head>
+ *@
+@* <div class="row">
     <div class="col-md-4">
         <section>
             <form id="account" method="post">
@@ -76,7 +81,41 @@
             }
         </section>
     </div>
+</div> *@
+
+@* <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div class="card p-4 shadow-sm" style="width: 400px; border-radius: 10px;"> *@
+<h3 class="text-center mb-3">Login</h3>
+<form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+    <!-- Email -->
+    <div class="mb-3">
+        <label asp-for="Input.Email" class="form-label">Enter your email</label>
+        <input asp-for="Input.Email" class="form-control rounded-pill" autocomplete="email" placeholder="example@gmail.com" />
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+        <label asp-for="Input.Password" class="form-label">Create a password</label>
+        <input asp-for="Input.Password" class="form-control rounded-pill" autocomplete="new-password" placeholder="••••••••" />
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
+        <small><a asp-page="./ForgotPassword">Forgot your password?</a></small>
+    </div>
+    @* <div class="text mt-3">
+       
+    </div> *@
+
+    <!-- Submit Button -->
+    <button id="registerSubmit" type="submit" class="btn btn-primary w-100 rounded-pill">Login</button>
+</form>
+
+<div class="text-center mt-3">
+    <small>You haven't an account? <a asp-page="./Register">Register now</a></small>
 </div>
+@*  </div>
+</div> *@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -23,12 +23,14 @@ namespace IdentityDemo.Areas.Identity.Pages.Account
         private readonly UserManager<User> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly IMailService _mailService;
+        private readonly IConfiguration _configuration;
 
-        public ForgotPasswordModel(UserManager<User> userManager, IEmailSender emailSender, IMailService mailService)
+        public ForgotPasswordModel(UserManager<User> userManager, IEmailSender emailSender, IMailService mailService, IConfiguration configuration)
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _mailService = mailService;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -37,6 +39,7 @@ namespace IdentityDemo.Areas.Identity.Pages.Account
         /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
+        public string ErrorMessage { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -50,10 +53,11 @@ namespace IdentityDemo.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             [EmailAddress]
+            [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*[a-zA-Z]+[a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email format.")]
             public string Email { get; set; }
         }
-
         public async Task<IActionResult> OnPostAsync()
+        
         {
             if (ModelState.IsValid)
             {
@@ -74,15 +78,60 @@ namespace IdentityDemo.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _mailService.SendEmailAsync(
-                    Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                await _mailService.SendEmailAsync(Input.Email, "Reset Password",
+                        $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                //await _emailSender.SendEmailAsync(
+                //    Input.Email,
+                //    "Reset Password",
+                //    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
 
             return Page();
         }
+
+
+        //public async Task<IActionResult> OnPostAsync()
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var user = await _userManager.FindByEmailAsync(Input.Email);
+        //        if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+        //        {
+        //            ErrorMessage = "No User found.";
+        //            return Page();
+        //        }
+
+        //        string host = _configuration.GetSection("MailSetting").GetSection("Host").Value!;
+        //        int port = int.Parse(_configuration.GetSection("MailSetting").GetSection("Port").Value!);
+        //        string email = _configuration.GetSection("MailSetting").GetSection("Email").Value!;
+        //        string password = _configuration.GetSection("MailSetting").GetSection("Password").Value!;
+        //        //string baseurl = _configuration.GetSection("ApplicationInfo").GetSection("BaseUrl").Value!;
+
+        //        var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+        //        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        //        var encodedEmail = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Email));
+        //        var callbackUrl = Url.Page(
+        //            "/Account/ResetPassword",
+        //            pageHandler: null,
+        //            values: new { area = "Identity", code, e = encodedEmail, s = false },
+        //            protocol: Request.Scheme);
+        //        var userName = user.FirstName + " " + user.LastName;
+
+        //        string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates", "PasswordResetTemplate.html");
+        //        string emailBody = await System.IO.File.ReadAllTextAsync(templatePath);
+
+        //        emailBody = emailBody.Replace("{{callbackUrl}}", HtmlEncoder.Default.Encode(callbackUrl));
+        //        emailBody = emailBody.Replace("{{userName}}", userName);
+
+        //        await _mailService.SendEmailAsync(Input.Email,"Reset Your Password", emailBody);
+
+        //        return RedirectToPage("./ForgotPasswordConfirmation");
+        //    }
+
+        //    return Page();
+        //}
     }
 }
