@@ -1,4 +1,5 @@
 using IdentityDemo.Models;
+using IdentityDemo.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -17,6 +18,7 @@ namespace IdentityDemo.Controllers
 
         public IActionResult Index()
         {
+            
             return View();
         }
 

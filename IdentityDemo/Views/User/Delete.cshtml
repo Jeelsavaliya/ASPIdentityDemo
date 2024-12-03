@@ -1,0 +1,57 @@
+﻿@model IdentityDemo.Models.User
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title text-bold">Delete User</h3>
+                    </div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger span-error-text"></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="FirstName" class="control-label">First Name</label>
+                                    <input asp-for="FirstName" class="form-control form-control-sm" readonly />
+                                    <span asp-validation-for="FirstName" class="text-danger span-error-text"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="LastName" class="control-label">Last Name</label>
+                                    <input asp-for="LastName" class="form-control form-control-sm" readonly />
+                                    <span asp-validation-for="LastName" class="text-danger span-error-text"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="Email" class="control-label"></label>
+                                    <input asp-for="Email" class="form-control form-control-sm" readonly />
+                                    <span asp-validation-for="Email" class="text-danger span-error-text"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="PhoneNumber" class="control-label">Phone Number</label>
+                                    <input asp-for="PhoneNumber" class="form-control form-control-sm" readonly />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger span-error-text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-right">
+                        <form asp-action="Delete">
+                            <input type="hidden" asp-for="Id" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <a asp-action="Index" class="btn btn-primary">Cancel</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

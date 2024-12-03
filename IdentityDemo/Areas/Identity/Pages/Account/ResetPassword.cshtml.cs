@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityDemo.Models;
+using IdentityDemo.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +19,13 @@ namespace IdentityDemo.Areas.Identity.Pages.Account
     public class ResetPasswordModel : PageModel
     {
         private readonly UserManager<User> _userManager;
-
-        public ResetPasswordModel(UserManager<User> userManager)
+        private readonly IUserStore<User> _userStore;
+        private readonly IUserEmailStore<User> _emailStore;
+        public ResetPasswordModel(UserManager<User> userManager, IUserStore<User> userStore)
         {
             _userManager = userManager;
+            _userManager = userManager;
+            _emailStore = GetEmailStore();
         }
 
         /// <summary>
@@ -72,7 +76,7 @@ namespace IdentityDemo.Areas.Identity.Pages.Account
 
         }
 
-        public IActionResult OnGet(string code = null)
+        public IActionResult OnGet(string code = null, string e = null, bool s = true)
         {
             if (code == null)
             {
@@ -86,6 +90,20 @@ namespace IdentityDemo.Areas.Identity.Pages.Account
                 };
                 return Page();
             }
+            //if (code == null)
+            //{
+            //    return BadRequest("A code must be supplied for password reset.");
+            //}
+            //else
+            //{
+            //    Input = new InputModel
+            //    {
+            //        Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code)),
+            //        Email = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(e))
+            //    };
+            //    ViewData["IsReset"] = s;
+            //    return Page();
+            //}
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -103,8 +121,14 @@ namespace IdentityDemo.Areas.Identity.Pages.Account
             }
 
             var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
+
+            await _userStore.SetUserNameAsync(user, user.Email, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, user.Email, CancellationToken.None);
+
             if (result.Succeeded)
             {
+                var codeConfirmEmail = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var confirmEmail = await _userManager.ConfirmEmailAsync(user, codeConfirmEmail);
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
@@ -113,6 +137,15 @@ namespace IdentityDemo.Areas.Identity.Pages.Account
                 ModelState.AddModelError(string.Empty, error.Description);
             }
             return Page();
+        }
+
+        private IUserEmailStore<User> GetEmailStore()
+        {
+            if (!_userManager.SupportsUserEmail)    
+            {
+                throw new NotSupportedException("The default UI requires a user store with email support.");
+            }
+            return (IUserEmailStore<User>)_userStore;
         }
     }
 }

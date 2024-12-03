@@ -1,0 +1,169 @@
+﻿    @model IEnumerable<IdentityDemo.Models.User>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <input type="hidden" id="SuccessMsg" value="@TempData["SuccessMessage"]" />
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <input type="hidden" id="ErrorMsg" value="@TempData["ErrorMessage"]" />
+}
+@{
+    var currentUserId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+}
+<hea
+<style>
+    .table td, .table th {
+        vertical-align: middle !important;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+</style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                <div class="card card-success card-outline position-relative">
+                    <div class="card-header">
+                        <h3 class="card-title text-bold">Users</h3>
+                        <div class="card-tools">
+                            <a asp-action="Create" class="btn btn-sm btn-success"><i class="fa fa-plus"></i> Add</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="overlay loading-card d-none"><i class="fas fa-2x fa-sync-alt fa-spin"></i></div>
+                        <table class="table table-bordered table-hover" style="width:100% !important;" id="userListTable">
+                            <thead>
+                                <tr>
+                                    <th data-priority="1">First Name</th>
+                                    <th data-priority="1">Last Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th>Status</th>
+                                    @* <th>CreatedAt</th> *@
+                                    <th>Action</th>
+                                   @*  <th data-priority="1" data-orderable="false"></th> *@
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.FirstName</td>
+                                        <td>@item.LastName</td>
+                                        <td>@item.Email</td>
+                                        <td>@item.PhoneNumber</td>
+                                        @if (item.PasswordHash != null)
+                                        {
+                                            <td><span class="badge badge-success">Active</span></td>
+                                        }
+                                        else
+                                        {
+                                            <td><span class="badge badge-danger">Not Active</span></td>
+                                        }
+                                       @*  <td>@item.CreatedAt.ToString("yyyy-MM-dd T HH:mm:ss")</td> *@
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="dropdown-item"><i class="btn btn-outline-primary mr-2">Edit</i></a>
+                                            @if (item.PasswordHash == null)
+                                                {
+                                                <a asp-action="SendMail" asp-route-id="@item.Id" class="dropdown-item" onclick="ShowLoading()"><i class="btn btn-outline-secondary mr-2">Send Mail</i></a>
+                                                }
+                                            @if (item.Id != currentUserId)
+                                            {
+                                                <a asp-action="Delete" asp-route-id="@item.Id" class="dropdown-item"><i class="btn btn-outline-danger mr-2">Delete</i></a>
+                                            }
+                                            @* <button type="submit" class="btn btn-danger btn-sm" onclick="return fun1()">Delete<i class="bi bi-trash"></i></button> *@
+                                        </td>
+                                        @* <td class="text-center">
+
+                                            <a class="text-dark m-1 fs-6" data-toggle="dropdown" href="#">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </a>
+                                            <div class="dropdown-menu action">
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="dropdown-item"><i class="fa fa-edit mr-2"></i>Edit</a>
+                                                @if (item.PasswordHash == null)
+                                                {
+                                                    <a asp-action="SendMail" asp-route-id="@item.Id" class="dropdown-item" onclick="ShowLoading()"><i class="fa fa-envelope mr-2"></i>Send Mail</a>
+                                                }
+                                                @if (item.Id != currentUserId)
+                                                {
+                                                    <a data-toggle="modal" data-target="#modal-delete" data-id="@item.Id" class="dropdown-item deletePointer"><i class="fa fa-trash mr-2"></i>Delete</a>
+                                                }
+                                            </div>
+                                        </td> *@
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* <div class="modal fade" id="modal-delete">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-bold">Confirm Delete User</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body d-flex flex-column justify-content-center align-items-center text-center">
+                <h4>Are you sure you want to delete this user?</h4>
+                <p>This action cannot be undone!</p>
+                <form id="delete-form" method="post">
+                    <input type="hidden" id="user-id" name="Id" value="" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" form="delete-form" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div> *@
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            localStorage.clear();
+            $('#userListTable').DataTable({
+                stateSave: true,
+                destroy: true,
+                paging: true,
+                pagingType: "simple_numbers",
+                searching: false,
+                ordering: true,
+                info: true,
+                autoWidth: true,
+                responsive: true,
+                order: [[5, "desc"]],
+                columnDefs: [
+                    { "targets": 5, "visible": false },
+                ],
+                language: {
+                    paginate: {
+                        previous: "<",
+                        next: ">"
+                    }
+                }
+            });
+        });
+
+
+        function fun1() {
+            if (confirm("Are You Sure Want To Delete")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    </script>
+}
+
