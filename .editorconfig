@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# ASP0024: Route handler has multiple parameters with the [FromBody] attribute
+dotnet_diagnostic.ASP0024.severity = warning
