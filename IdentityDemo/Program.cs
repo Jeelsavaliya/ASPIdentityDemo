@@ -4,6 +4,8 @@ using IdentityDemo.Data;
 using IdentityDemo.Service;
 using IdentityDemo.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("IdentityDbContextConnection") ?? throw new InvalidOperationException("Connection string 'IdentityDbContextConnection' not found.");
 
@@ -22,7 +24,7 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IMailService, MailService>();
-//builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 //Add Identity service 
 //builder.Services.AddIdentityCore<User>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -30,6 +32,21 @@ builder.Services.AddScoped<IMailService, MailService>();
 //    .AddEntityFrameworkStores<AppDbContext>()
 //    .AddSignInManager()
 //    .AddDefaultTokenProviders();
+
+//builder.Services.Configure<CookiePolicyOptions>(options =>
+//{
+//    options.MinimumSameSitePolicy = SameSiteMode.None;
+//});
+
+
+builder.Services.AddAuthentication()
+    .AddGoogle(option =>
+    {
+        option.ClientId = builder.Configuration["App:GoogleClientId"];
+        option.ClientSecret = builder.Configuration["App:GoogleClientSecret"];
+        option.CallbackPath = "/signin-google";
+        //option.SaveTokens = true;
+    });
 
 var app = builder.Build();
 
@@ -47,6 +64,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+
 
 app.UseAuthorization();
 
