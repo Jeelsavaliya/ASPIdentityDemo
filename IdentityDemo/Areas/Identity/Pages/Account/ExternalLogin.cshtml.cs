@@ -102,16 +102,6 @@ namespace IdentityDemo.Areas.Identity.Pages.Account
             var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return new ChallengeResult(provider, properties);
-
-            //if (provider == "Google")
-            //{
-            //    var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
-            //    var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-            //    return new ChallengeResult(provider, properties);
-            //}
-
-            //// Handle other external providers (if any)
-            //return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
         }
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)

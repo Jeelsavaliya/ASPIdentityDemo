@@ -85,7 +85,6 @@
 
 @* <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
     <div class="card p-4 shadow-sm" style="width: 400px; border-radius: 10px;"> *@
-
 <h3 class="text-center mb-3">Login</h3>
 <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
@@ -106,33 +105,15 @@
     </div>
     @* <div class="text mt-3">
        
-    </div> *@   
+    </div> *@
 
     <!-- Submit Button -->
     <button id="registerSubmit" type="submit" class="btn btn-primary w-100 rounded-pill">Login</button>
-   
 </form>
 
 <div class="text-center mt-3">
     <small>You haven't an account? <a asp-page="./Register">Register now</a></small>
 </div>
-
-<!-- OR Divider -->
-<div class="text-center my-3">
-    <span>or</span>
-</div>
-
-<!-- ✅ External Login Form Must Be Separate -->
-<form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-    @foreach (var provider in Model.ExternalLogins!)
-    {
-        <button type="submit" class="btn btn-light w-100 rounded-pill border d-flex align-items-center justify-content-center" name="provider" value="@provider.Name">
-            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" width="20" class="me-2">
-            Sign in with @provider.DisplayName
-        </button>
-    }
-</form>
-
 @*  </div>
 </div> *@
 
